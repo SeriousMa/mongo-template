@@ -17,27 +17,11 @@
 
     <!-- 定义mongo对象，对应的是mongodb官方jar包中的Mongo -->
     <mongo:mongo-client id="mongo" host="${mongo.url}" port="${mongo.port}">
-        <mongo:client-options write-concern="NORMAL" />
+        <mongo:client-options write-concern="NORMAL"/>
     </mongo:mongo-client>
 
-    <mongo:db-factory id="mongoDbFactory" mongo-ref="mongo" dbname="${mongo.dbname}"/>
-
-    <!-- 自动扫描以下包的类 -->
-    <mongo:mapping-converter base-package="com.serious.model"/>
-
-    <bean id="mappingContext" class="org.springframework.data.mongodb.core.mapping.MongoMappingContext"/>
-
     <!-- 配置mongodb映射类型 -->
-    <bean id="mappingMongoConverter" class="org.springframework.data.mongodb.core.convert.MappingMongoConverter">
-        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
-        <constructor-arg name="mappingContext" ref="mappingContext"/>
-    </bean>
-
-    <!-- 操作mongodb -->
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
-        <constructor-arg name="mongoConverter" ref="mappingMongoConverter"/>
-    </bean>
-
-
+    <mongo:db-factory id="mongoDbFactory" mongo-ref="mongo" dbname="${mongo.dbname}"/>
+    <mongo:mapping-converter id="mappingMongoConverter" base-package="com.serious.model" db-factory-ref="mongoDbFactory"/>
+    <mongo:template converter-ref="mappingMongoConverter" db-factory-ref="mongoDbFactory"/>
 </beans>
